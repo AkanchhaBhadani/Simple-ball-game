@@ -53,7 +53,7 @@ int main()
     std::mt19937 ran_no(rd());
     long long int score = 0;
     sf::Font font;
-    if(!font.loadFromFile("HTOWERT.ttf"))
+    if(!font.loadFromFile("images/HTOWERT.ttf"))
     {
         return 1;
     }
