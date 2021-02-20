@@ -45,6 +45,7 @@ int main()
     barrier4.setPosition(brick2.getPosition().x+500, 386);
     bool up = false;//true if ball is in air and has to come down
     bool going_up = false;//true if ball is on ground and has to go up
+    bool right = false;
     sf::Clock clock;
     sf::View view(sf::Vector2f(320.0f, 240.0f), sf::Vector2f(640.f, 480.f));
     sf::Clock clock2;
@@ -52,8 +53,9 @@ int main()
     std::random_device rd;
     std::mt19937 ran_no(rd());
     long long int score = 0;
+    //float curr_score = 0;
     sf::Font font;
-    if(!font.loadFromFile("images/HTOWERT.ttf"))
+    if(!font.loadFromFile("HTOWERT.ttf"))
     {
         return 1;
     }
@@ -73,19 +75,19 @@ int main()
         {
             if (event.type == sf::Event::EventType::KeyPressed)
             {
-                if (event.key.code == sf::Keyboard::Up && going_up == false && up == false )
+                if (event.key.code == sf::Keyboard::Up && up == false && going_up == false)
                 {
                     ball.setPosition(ball.getPosition().x, ball.getPosition().y - 0.5*10*pow(clock.getElapsedTime().asSeconds(),2));
                     going_up = true;
-                    if (ball.getPosition().y == 250)
+                    if (ball.getPosition().y == 275)
                     {
                         up = true;
                     }
                 }
 
-
                 if (event.key.code == sf::Keyboard::Right)
                 {
+                    right = true;
                     if (going_up == true || up == true)
                     {
                         ball.move(2.0f,0);
@@ -100,10 +102,21 @@ int main()
                         barrier2.move(-5.0f,0);
                         barrier3.move(-5.0f,0);
                         barrier4.move(-5.0f,0);
-                        score+=1;
+                        if (right == true)
+                        {
+                            score+=1;
+                        }
                 }
             }
 
+            if (event.type == sf::Event::EventType::KeyReleased)
+            {
+                if (event.key.code == sf::Keyboard::Right)
+                {
+                    right = false;
+                    //curr_score = 0;
+                }
+            }
             if(event.type == sf::Event::EventType::Closed)
             {
                 wind.close();
@@ -183,17 +196,29 @@ int main()
         //motion of the ball when going up
         if (going_up == true)
         {
-            if (ball.getPosition().y - (0.5*10*pow(clock.getElapsedTime().asSeconds(),2)) > 250 && clock2.getElapsedTime().asSeconds()>0.005f)
+            if (ball.getPosition().y - (0.5*10*pow(clock.getElapsedTime().asSeconds(),2)) > 275 && clock2.getElapsedTime().asSeconds()>0.005f)
             {
-                ball.move(0,-(0.5*10*pow(clock.getElapsedTime().asSeconds(),2)));
+                if (right == true)
+                {
+                    ball.move(0.5*clock.getElapsedTime().asSeconds(),-(0.5*10*pow(clock.getElapsedTime().asSeconds(),2)));
+                    //curr_score += 0.005*00000001;
+                }
+                else
+                {
+                    ball.move(0,-(0.5*10*pow(clock.getElapsedTime().asSeconds(),2)));
+                }
                 clock2.restart();
             }
-            if (ball.getPosition().y - (0.5*10*pow(clock.getElapsedTime().asSeconds(),2)) < 250)
+            if (ball.getPosition().y - (0.5*10*pow(clock.getElapsedTime().asSeconds(),2)) < 275)
             {
-                ball.setPosition(ball.getPosition().x, 250);
+                if (right == true)
+                {
+                    ball.move(0.5*clock.getElapsedTime().asSeconds(),0);
+                }
+                ball.setPosition(ball.getPosition().x, 275);
 
             }
-            if (ball.getPosition().y == 250)
+            if (ball.getPosition().y == 275)
             {
                 going_up = false;
                 up = true;
@@ -205,11 +230,24 @@ int main()
         {
             if (ball.getPosition().y + (0.5*10*pow(clock.getElapsedTime().asSeconds(),2))< 396 && clock2.getElapsedTime().asSeconds()>0.005f)
             {
-                ball.move(0,(0.5*10*pow(clock.getElapsedTime().asSeconds(),2)));
+                if (right == true)
+                {
+                    ball.move(0.5*clock.getElapsedTime().asSeconds(),(0.5*10*pow(clock.getElapsedTime().asSeconds(),2)));
+                    //curr_score += 0.005*0.00000001;
+                }
+                else
+                {
+                    ball.move(0,(0.5*10*pow(clock.getElapsedTime().asSeconds(),2)));
+                }
                 clock2.restart();
             }
             if (ball.getPosition().y + (0.5*10*pow(clock.getElapsedTime().asSeconds(),2))> 396 )
             {
+                if (right == true)
+                {
+                    ball.move(0.5*clock.getElapsedTime().asSeconds(),0);
+
+                }
                 ball.setPosition(ball.getPosition().x, 396);
             }
             if (ball.getPosition().y == 396)
@@ -218,7 +256,10 @@ int main()
                 clock.restart();
             }
         }
-
+        /*if (right == true && up == false && going_up == false)
+        {
+            score+=(int)curr_score;
+        }*/
         std::stringstream ss;
         ss<<score;
         disp_score.setString(ss.str());
