@@ -73,7 +73,7 @@ int main()
         {
             if (event.type == sf::Event::EventType::KeyPressed)
             {
-                if (event.key.code == sf::Keyboard::Up )
+                if (event.key.code == sf::Keyboard::Up && going_up == false && up == false )
                 {
                     ball.setPosition(ball.getPosition().x, ball.getPosition().y - 0.5*10*pow(clock.getElapsedTime().asSeconds(),2));
                     going_up = true;
